@@ -11,7 +11,7 @@ export const registerSchema = z.object({
   students: z
     .array(email)
     .min(1, "At least one student is required")
-    .max(1000, "Cannot register more than 100 students at once"),
+    .max(1000, "Cannot register more than 1000 students at once"),
 });
 
 export type RegisterInput = z.infer<typeof registerSchema>;

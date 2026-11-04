@@ -17,7 +17,7 @@ const mockedCommon = jest.mocked(teacherService.getCommonStudents);
 const mockedSuspend = jest.mocked(teacherService.suspendStudent);
 const mockedNotification = jest.mocked(teacherService.getNotificationRecipients);
 
-//strory 1: POST /api/register
+//story 1: POST /api/register
 describe("POST /api/register", () => {
   beforeEach(() => {
     jest.clearAllMocks();

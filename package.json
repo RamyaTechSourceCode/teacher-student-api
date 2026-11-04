@@ -1,8 +1,8 @@
 {
   "name": "teacher-student-api",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "REST API for teachers to register, findcommonstudents, suspend and notify students (Node.js, Express, MySQL)",
+  "main": "dist/server.js",
   "scripts": {
     "dev": "tsx watch src/server.ts",
     "test": "jest",

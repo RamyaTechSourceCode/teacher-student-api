@@ -74,7 +74,7 @@ export async function suspendStudent(studentEmail: string): Promise<boolean> {
   return result.affectedRows > 0;
 }
 
-//story 4: GET /api/retrievefornotifications
+//story 4: POST /api/retrievefornotifications
 /** Students registered to the teacher who are NOT suspended. */
 export async function findActiveStudentsOfTeacher(
   teacherEmail: string

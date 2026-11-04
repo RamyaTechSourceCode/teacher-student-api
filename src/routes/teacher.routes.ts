@@ -17,7 +17,6 @@ import { AppError } from "../errors/AppError.js";
 
 const router = Router();
 
-//router.post("/register", validateBody(registerSchema), register);
 router
   .route("/register")
   .post(validateBody(registerSchema), register)

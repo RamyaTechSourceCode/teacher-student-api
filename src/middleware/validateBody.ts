@@ -13,6 +13,6 @@ export const validateBody =
       return next(new AppError(400, `${field}: ${issue.message}`));
     }
 
-    req.body = result.data; // cleaned values (trimmed, lowercased)
+    req.body = result.data; // cleaned values (trimmed)
     next();
   };

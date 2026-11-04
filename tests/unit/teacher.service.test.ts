@@ -29,6 +29,18 @@ describe("teacherService.registerStudents", () => {
     jest.clearAllMocks();
   });
 
+  it("removes duplicate students ignoring letter case", async () => {
+    mockedRegister.mockResolvedValue(undefined);
+
+    await registerStudents("teacherken@gmail.com", [
+      "studentjon@gmail.com",
+      "StudentJon@Gmail.com",
+    ]);
+
+    expect(mockedRegister).toHaveBeenCalledWith("teacherken@gmail.com", [
+      "studentjon@gmail.com",
+    ]);
+  });
   it("passes teacher and students to the repository", async () => {
     mockedRegister.mockResolvedValue(undefined);
 
