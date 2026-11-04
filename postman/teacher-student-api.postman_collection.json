@@ -17,7 +17,9 @@
               "listen": "prerequest",
               "script": {
                 "type": "text/javascript",
-                "exec": ["  pm.variables.set(\"bigText\", \"x\".repeat(11 * 1024));"]
+                "exec": [
+                  "  pm.variables.set(\"bigText\", \"x\".repeat(11 * 1024));"
+                ]
               }
             }
           ],
@@ -35,8 +37,13 @@
             },
             "url": {
               "raw": "{{baseUrl}}/api/register",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "register"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "register"
+              ]
             }
           },
           "response": []
@@ -57,8 +64,13 @@
             },
             "url": {
               "raw": "{{baseUrl}}/api/register",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "register"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "register"
+              ]
             }
           },
           "response": []
@@ -79,8 +91,13 @@
             },
             "url": {
               "raw": "{{baseUrl}}/api/register",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "register"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "register"
+              ]
             }
           },
           "response": []
@@ -97,8 +114,13 @@
             "header": [],
             "url": {
               "raw": "{{baseUrl}}/api/commonstudents?teacher=teacherken@gmail.com",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "commonstudents"],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "commonstudents"
+              ],
               "query": [
                 {
                   "key": "teacher",
@@ -116,8 +138,13 @@
             "header": [],
             "url": {
               "raw": "{{baseUrl}}/api/commonstudents?teacher=teacherken@gmail.com&teacher=teacherjoe@gmail.com",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "commonstudents"],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "commonstudents"
+              ],
               "query": [
                 {
                   "key": "teacher",
@@ -139,8 +166,13 @@
             "header": [],
             "url": {
               "raw": "{{baseUrl}}/api/commonstudents",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "commonstudents"],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "commonstudents"
+              ],
               "query": [
                 {
                   "key": "teacher",
@@ -173,8 +205,13 @@
             },
             "url": {
               "raw": "{{baseUrl}}/api/suspend",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "suspend"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "suspend"
+              ]
             }
           },
           "response": []
@@ -186,7 +223,7 @@
             "header": [],
             "body": {
               "mode": "raw",
-              "raw": "{\r\n     \"teacher\": \"teacherjoe@gmail.com\",\r\n     \"students\": [\"commonstudent1@gmail.com\", \"commonstudent2@gmail.com\"]\r\n   }",
+              "raw": "{\r\n    \"student\": \"nobody@gmail.com\"\r\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -194,14 +231,13 @@
               }
             },
             "url": {
-              "raw": "{{baseUrl}}/api/suspend?student=nobody@gmail.com",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "suspend"],
-              "query": [
-                {
-                  "key": "student",
-                  "value": "nobody@gmail.com"
-                }
+              "raw": "{{baseUrl}}/api/suspend",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "suspend"
               ]
             }
           },
@@ -228,8 +264,13 @@
             },
             "url": {
               "raw": "{{baseUrl}}/api/retrievefornotifications",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "retrievefornotifications"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "retrievefornotifications"
+              ]
             }
           },
           "response": []
@@ -250,8 +291,13 @@
             },
             "url": {
               "raw": "{{baseUrl}}/api/retrievefornotifications",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "retrievefornotifications"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "retrievefornotifications"
+              ]
             }
           },
           "response": []
@@ -272,8 +318,13 @@
             },
             "url": {
               "raw": "{{baseUrl}}/api/retrievefornotifications",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "retrievefornotifications"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "retrievefornotifications"
+              ]
             }
           },
           "response": []
