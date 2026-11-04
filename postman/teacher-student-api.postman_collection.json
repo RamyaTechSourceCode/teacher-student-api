@@ -1,0 +1,347 @@
+{
+  "info": {
+    "_postman_id": "f97721d9-93ca-49ed-88d2-da67596a65ad",
+    "name": "TeacherStudent",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "24612793",
+    "_collection_link": "https://go.postman.co/collection/24612793-f97721d9-93ca-49ed-88d2-da67596a65ad?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "Register",
+      "item": [
+        {
+          "name": "Register - Ken",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "  pm.variables.set(\"bigText\", \"x\".repeat(11 * 1024));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"teacher\": \"teacherken@gmail.com\",\r\n  \"students\": [\r\n    \"studentbob@gmail.com\",\r\n    \"commonstudent1@gmail.com\",\r\n    \"commonstudent2@gmail.com\",\r\n    \"student_only_under_teacher_ken@gmail.com\"\r\n  ]\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/register",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "register"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Register - Joe",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"teacher\": \"teacherjoe@gmail.com\",\r\n  \"students\": [\r\n    \"commonstudent1@gmail.com\",\r\n    \"commonstudent2@gmail.com\",\r\n    \"studentmary@gmail.com\",\r\n    \"studentagnes@gmail.com\",\r\n    \"studentmiche@gmail.com\"\r\n  ]\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/register",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "register"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Register - invalid email",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"teacher\": \"teacherken\",\r\n  \"students\": [\"not-an-email\"]\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/register",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "register"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Common Students",
+      "item": [
+        {
+          "name": "CommonStudents - Ken",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/commonstudents?teacher=teacherken@gmail.com",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "commonstudents"
+              ],
+              "query": [
+                {
+                  "key": "teacher",
+                  "value": "teacherken@gmail.com"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "CommonStudents - Ken & Joe",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/commonstudents?teacher=teacherken@gmail.com&teacher=teacherjoe@gmail.com",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "commonstudents"
+              ],
+              "query": [
+                {
+                  "key": "teacher",
+                  "value": "teacherken@gmail.com"
+                },
+                {
+                  "key": "teacher",
+                  "value": "teacherjoe@gmail.com"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Common students - missing teacher",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/commonstudents",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "commonstudents"
+              ],
+              "query": [
+                {
+                  "key": "teacher",
+                  "value": "teacherken@gmail.com",
+                  "disabled": true
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Suspend",
+      "item": [
+        {
+          "name": "Suspend - Mary",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"student\":\"studentmary@gmail.com\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/suspend",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "suspend"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Suspend - unknown student",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n     \"teacher\": \"teacherjoe@gmail.com\",\r\n     \"students\": [\"commonstudent1@gmail.com\", \"commonstudent2@gmail.com\"]\r\n   }",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/suspend?student=nobody@gmail.com",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "suspend"
+              ],
+              "query": [
+                {
+                  "key": "student",
+                  "value": "nobody@gmail.com"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Retrieve for Notifications",
+      "item": [
+        {
+          "name": "Notification (registered students + mentions)",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"teacher\": \"teacherken@gmail.com\",\r\n  \"notification\": \"Hello students! @studentagnes@gmail.com @studentmiche@gmail.com\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/retrievefornotifications",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "retrievefornotifications"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Notification (no mentions)",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"teacher\": \"teacherken@gmail.com\",\r\n  \"notification\": \"Hey everybody\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/retrievefornotifications",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "retrievefornotifications"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Notification (missing notification)",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"teacher\": \"teacherken@gmail.com\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/retrievefornotifications",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "retrievefornotifications"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": ""
+    }
+  ]
+}
