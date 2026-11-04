@@ -2,6 +2,7 @@ services:
   mysql:
     image: mysql:8
     container_name: myapp-mysql
+    restart: unless-stopped
     environment:
       MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
       MYSQL_DATABASE: ${DB_NAME}
@@ -28,6 +29,7 @@ services:
       context: .
       dockerfile: Dockerfile
     container_name: teacher-student-api
+    restart: unless-stopped
     env_file: .env
     environment:
       NODE_ENV: production
