@@ -65,8 +65,32 @@ describe("POST /api/register", () => {
     expect(mockedRegister).not.toHaveBeenCalled();
   });
 
-  it("returns 413 when the student list makes the body too large", async () => {
+  it("accepts 1000 students (the documented maximum)", async () => {
+    const students = Array.from({ length: 1000 }, (_, i) => `student${i}@gmail.com`);
+
+    const res = await request(app)
+      .post("/api/register")
+      .send({ teacher: "teacherken@gmail.com", students });
+
+    expect(res.status).toBe(204);
+  });
+
+  it("returns 400 when more than 1000 students are sent", async () => {
     const students = Array.from({ length: 1001 }, (_, i) => `s${i}@gmail.com`);
+
+    const res = await request(app)
+      .post("/api/register")
+      .send({ teacher: "teacherken@gmail.com", students });
+
+    expect(res.status).toBe(400);
+    expect(mockedRegister).not.toHaveBeenCalled();
+  });
+
+  it("returns 413 when the body is larger than 100 KB", async () => {
+    const students = Array.from(
+      { length: 1000 },
+      (_, i) => `${"a".repeat(100)}${i}@gmail.com`
+    );
 
     const res = await request(app)
       .post("/api/register")

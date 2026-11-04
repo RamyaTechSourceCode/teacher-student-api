@@ -6,13 +6,16 @@ const email = z
   .pipe(z.email("Invalid email address").max(254, "Email is too long"));
 
 // ---------- Story 1: POST /api/register ----------
-export const registerSchema = z.object({
-  teacher: email,
-  students: z
-    .array(email)
-    .min(1, "At least one student is required")
-    .max(1000, "Cannot register more than 1000 students at once"),
-});
+export const registerSchema = z.object(
+  {
+    teacher: email,
+    students: z
+      .array(email)
+      .min(1, "At least one student is required")
+      .max(1000, "Cannot register more than 1000 students at once"),
+  },
+  { error: "Request body must be a JSON object" }
+);
 
 export type RegisterInput = z.infer<typeof registerSchema>;
 

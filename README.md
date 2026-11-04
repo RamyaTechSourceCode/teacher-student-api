@@ -15,12 +15,12 @@ Built with Node.js, TypeScript, Express 5 and MySQL 8.
 The API is deployed on an AWS EC2 instance, running the same Docker Compose setup
 described in section 2 (API container + MySQL container).
 
-| Method | Endpoint | Description |
-|---|---|---|
-| POST | `/api/register` | Register one or more students to a teacher |
-| GET | `/api/commonstudents?teacher=...` | Students common to all given teachers |
-| POST | `/api/suspend` | Suspend a student |
-| POST | `/api/retrievefornotifications` | Students who can receive a notification |
+| Method | Endpoint                          | Description                                |
+| ------ | --------------------------------- | ------------------------------------------ |
+| POST   | `/api/register`                   | Register one or more students to a teacher |
+| GET    | `/api/commonstudents?teacher=...` | Students common to all given teachers      |
+| POST   | `/api/suspend`                    | Suspend a student                          |
+| POST   | `/api/retrievefornotifications`   | Students who can receive a notification    |
 
 **Quick check (no setup needed)**
 
@@ -59,30 +59,33 @@ See [Known limitations](#8-known-limitations).
 ## 2. Run locally with Docker (recommended)
 
 Starts MySQL and the API together. The database schema is created automatically.
-No `.env` file or other setup is needed.
 
-**Prerequisite:** [Docker Desktop](https://www.docker.com/products/docker-desktop/) installed and **running**
-(it includes Docker Compose).
+**Prerequisite:** [Docker Desktop](https://www.docker.com/products/docker-desktop/) installed and running (it includes Docker Compose).
 
 ```bash
 git clone https://github.com/RamyaTechSourceCode/teacher-student-api.git
 cd teacher-student-api
+cp .env.example .env          # Windows PowerShell: Copy-Item .env.example .env
 docker compose up --build
 ```
 
-The first run takes 1–2 minutes. When the logs show `Database connected` and `Server listening`,
-the API is available at **http://localhost:5000**.
+`.env.example` contains placeholder values for a local database only; no real
+credentials are stored in the repository.
+
+The first run takes 1–2 minutes. When the logs show `Database connected` and
+`Server running on http://localhost:5000`, the API is ready.
 
 Useful commands:
 
 ```bash
 docker compose ps                  # container status
-docker compose logs -f api         # API logs
+docker compose logs -f app         # API logs
 docker compose down                # stop
 docker compose down -v             # stop and delete all data (fresh database next start)
 ```
 
 ---
+
 ## 3. Run locally without Docker (Node.js)
 
 Runs the API directly with Node.js, with hot reload. MySQL still runs in Docker
@@ -136,16 +139,43 @@ The API is available at **http://localhost:5000**. MySQL is exposed on
 
 Other scripts:
 
-| Command | Description |
-|---|---|
-| `npm run dev` | Start with hot reload (`tsx watch`) |
-| `npm run build` | Compile TypeScript to `dist/` |
-| `npm start` | Run the compiled build |
-| `npm test` | Run unit tests |
-| `npm run test:integration` | Run integration tests against a MySQL test database (Docker) |
-| `npm run test:coverage` | Unit tests with a coverage report |
-| `npm run lint` | Lint with ESLint |
-| `npm run format` | Format with Prettier |
+| Command                 | Description                         |
+| ----------------------- | ----------------------------------- |
+| `npm run dev`           | Start with hot reload (`tsx watch`) |
+| `npm run build`         | Compile TypeScript to `dist/`       |
+| `npm start`             | Run the compiled build              |
+| `npm test`              | Run unit tests                      |
+| `npm run test:coverage` | Unit tests with a coverage report   |
+| `npm run lint`          | Lint with ESLint                    |
+| `npm run format`        | Format with Prettier                |
+
+---
+
+## 4. Running the tests
+
+**Prerequisite:** Node.js 22 LTS (20+ works). No database, Docker or `.env` file is needed:
+the tests mock the data layer.
+
+```bash
+npm ci
+npm test
+```
+
+To see a coverage report:
+
+```bash
+npx jest --coverage
+```
+
+| Test file                              | Covers                                                                                          |
+| -------------------------------------- | ----------------------------------------------------------------------------------------------- |
+| `tests/unit/teacher.routes.test.ts`    | HTTP layer with supertest: status codes, validation, error responses, 404/405, security headers |
+| `tests/unit/teacher.service.test.ts`   | Business rules: de-duplication, suspended exclusion, spec examples                              |
+| `tests/unit/teacher.validator.test.ts` | Request validation schemas                                                                      |
+| `tests/unit/extractMentions.test.ts`   | @mention parsing edge cases                                                                     |
+
+The SQL queries in the repository layer are exercised end to end with the Postman
+collection (section 5) against a running instance.
 
 ---
 
@@ -158,6 +188,7 @@ Other scripts:
    - `localUrl`: `http://localhost:5000`
 
    To test a local instance, set `baseUrl` to `{{localUrl}}`.
+
 3. Run the requests **in order** (collection → **Run**). Later requests depend on data
    created by the Register requests.
 
@@ -249,7 +280,13 @@ GET /api/commonstudents?teacher=teacherken%40gmail.com&teacher=teacherjoe%40gmai
 **Response:** `200 OK`
 
 ```json
-{ "recipients": ["studentbob@gmail.com", "studentagnes@gmail.com", "studentmiche@gmail.com"] }
+{
+  "recipients": [
+    "studentbob@gmail.com",
+    "studentagnes@gmail.com",
+    "studentmiche@gmail.com"
+  ]
+}
 ```
 
 - Recipients are students who are **not suspended** and are either registered to the teacher
@@ -261,13 +298,13 @@ GET /api/commonstudents?teacher=teacherken%40gmail.com&teacher=teacherjoe%40gmai
 
 ### Error responses
 
-| Status | When | Example message |
-|---|---|---|
-| 400 | Invalid or missing fields, invalid email, malformed JSON, body not JSON | `teacher: Invalid email address` |
-| 404 | Student not found (suspend), unknown route | `Student not found: nobody@gmail.com` |
-| 405 | Unsupported HTTP method on a valid route (e.g. `GET /api/suspend`) | `Method not allowed` |
-| 413 | Request body larger than 10 KB | `Request body is too large` |
-| 500 | Unexpected server error (details only in server logs) | `Internal server error` |
+| Status | When                                                                    | Example message                       |
+| ------ | ----------------------------------------------------------------------- | ------------------------------------- |
+| 400    | Invalid or missing fields, invalid email, malformed JSON, body not JSON | `teacher: Invalid email address`      |
+| 404    | Student not found (suspend), unknown route                              | `Student not found: nobody@gmail.com` |
+| 405    | Unsupported HTTP method on a valid route (e.g. `GET /api/suspend`)      | `Method not allowed`                  |
+| 413    | Request body larger than 100 KB                                         | `Request body is too large`           |
+| 500    | Unexpected server error (details only in server logs)                   | `Internal server error`               |
 
 ---
 
@@ -309,7 +346,7 @@ postman/            Postman collection
   dot or another `@`, so a plain email address in the text (`bob@gmail.com`) is not treated as
   a mention. Mentions can be separated by spaces, commas or new lines.
 - Limits: up to 1000 students per register request, 100 teachers per
-  `commonstudents` query, 5000 characters per notification, 10 KB request body.
+  `commonstudents` query, 5000 characters per notification, 100 KB request body.
 
 **Security**
 
@@ -335,7 +372,7 @@ development, JSON in production, and silent during tests.
 ## 8. Known limitations
 
 - The hosted API uses HTTP, not HTTPS. In production, TLS would be terminated by a
-  reverse proxy or an load balancer in front of the API.
+  reverse proxy or a load balancer in front of the API.
 - No rate limiting on the public endpoint. In production this could be added with
   middleware such as `express-rate-limit` or at the load balancer / API gateway.
 - The hosted database is shared by all testers, so its data changes over time. For

@@ -17,9 +17,7 @@
               "listen": "prerequest",
               "script": {
                 "type": "text/javascript",
-                "exec": [
-                  "  pm.variables.set(\"bigText\", \"x\".repeat(11 * 1024));"
-                ]
+                "exec": ["  pm.variables.set(\"bigText\", \"x\".repeat(11 * 1024));"]
               }
             }
           ],
@@ -37,13 +35,8 @@
             },
             "url": {
               "raw": "{{baseUrl}}/api/register",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "register"
-              ]
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "register"]
             }
           },
           "response": []
@@ -64,13 +57,8 @@
             },
             "url": {
               "raw": "{{baseUrl}}/api/register",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "register"
-              ]
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "register"]
             }
           },
           "response": []
@@ -91,13 +79,8 @@
             },
             "url": {
               "raw": "{{baseUrl}}/api/register",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "register"
-              ]
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "register"]
             }
           },
           "response": []
@@ -114,13 +97,8 @@
             "header": [],
             "url": {
               "raw": "{{baseUrl}}/api/commonstudents?teacher=teacherken@gmail.com",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "commonstudents"
-              ],
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "commonstudents"],
               "query": [
                 {
                   "key": "teacher",
@@ -138,13 +116,8 @@
             "header": [],
             "url": {
               "raw": "{{baseUrl}}/api/commonstudents?teacher=teacherken@gmail.com&teacher=teacherjoe@gmail.com",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "commonstudents"
-              ],
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "commonstudents"],
               "query": [
                 {
                   "key": "teacher",
@@ -166,13 +139,8 @@
             "header": [],
             "url": {
               "raw": "{{baseUrl}}/api/commonstudents",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "commonstudents"
-              ],
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "commonstudents"],
               "query": [
                 {
                   "key": "teacher",
@@ -205,13 +173,8 @@
             },
             "url": {
               "raw": "{{baseUrl}}/api/suspend",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "suspend"
-              ]
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "suspend"]
             }
           },
           "response": []
@@ -232,13 +195,8 @@
             },
             "url": {
               "raw": "{{baseUrl}}/api/suspend",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "suspend"
-              ]
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "suspend"]
             }
           },
           "response": []
@@ -264,13 +222,8 @@
             },
             "url": {
               "raw": "{{baseUrl}}/api/retrievefornotifications",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "retrievefornotifications"
-              ]
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "retrievefornotifications"]
             }
           },
           "response": []
@@ -291,13 +244,8 @@
             },
             "url": {
               "raw": "{{baseUrl}}/api/retrievefornotifications",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "retrievefornotifications"
-              ]
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "retrievefornotifications"]
             }
           },
           "response": []
@@ -318,13 +266,8 @@
             },
             "url": {
               "raw": "{{baseUrl}}/api/retrievefornotifications",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "retrievefornotifications"
-              ]
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "retrievefornotifications"]
             }
           },
           "response": []
@@ -335,7 +278,7 @@
   "variable": [
     {
       "key": "baseUrl",
-      "value": "http://18.139.60.28:5000" 
+      "value": "http://18.139.60.28:5000"
     },
     {
       "key": "localUrl",

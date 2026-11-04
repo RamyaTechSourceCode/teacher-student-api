@@ -8,7 +8,7 @@ export async function registerStudents(
   students: string[]
 ): Promise<void> {
   //const uniqueStudents = [...new Set(students)];//will not consider case-insensitive duplicates, so using a custom function below
-   const uniqueStudents = uniqueEmailsIgnoreCase(students);
+  const uniqueStudents = uniqueEmailsIgnoreCase(students);
   await teacherRepository.registerStudents(teacher, uniqueStudents);
   logger.info({ studentCount: uniqueStudents.length }, "Students registered to teacher");
 }
