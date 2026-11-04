@@ -1,20 +1,25 @@
 import { describe, it, expect } from "@jest/globals";
-import { notificationSchema ,suspendSchema, commonStudentsSchema, registerSchema } from "../../src/validators/teacher.validator.js";
+import {
+  notificationSchema,
+  suspendSchema,
+  commonStudentsSchema,
+  registerSchema,
+} from "../../src/validators/teacher.validator.js";
 
 //story 1: POST /api/register
 describe("registerSchema", () => {
   it("accepts a valid request and trims emails", () => {
-  const result = registerSchema.safeParse({
-    teacher: "  TeacherKen@Gmail.com ",
-    students: ["StudentJon@gmail.com"],
-  });
+    const result = registerSchema.safeParse({
+      teacher: "  TeacherKen@Gmail.com ",
+      students: ["StudentJon@gmail.com"],
+    });
 
-  expect(result.success).toBe(true);
-  expect(result.data).toEqual({
-    teacher: "TeacherKen@Gmail.com",
-    students: ["StudentJon@gmail.com"],
+    expect(result.success).toBe(true);
+    expect(result.data).toEqual({
+      teacher: "TeacherKen@Gmail.com",
+      students: ["StudentJon@gmail.com"],
+    });
   });
-});
 
   it("rejects an invalid teacher email", () => {
     const result = registerSchema.safeParse({
@@ -52,13 +57,19 @@ describe("registerSchema", () => {
   });
   it("rejects more than 1000 students", () => {
     const students = Array.from({ length: 1001 }, (_, i) => `s${i}@gmail.com`);
-    const result = registerSchema.safeParse({ teacher: "teacherken@gmail.com", students });
+    const result = registerSchema.safeParse({
+      teacher: "teacherken@gmail.com",
+      students,
+    });
     expect(result.success).toBe(false);
   });
 
   it("accepts exactly 1000 students", () => {
     const students = Array.from({ length: 1000 }, (_, i) => `s${i}@gmail.com`);
-    const result = registerSchema.safeParse({ teacher: "teacherken@gmail.com", students });
+    const result = registerSchema.safeParse({
+      teacher: "teacherken@gmail.com",
+      students,
+    });
     expect(result.success).toBe(true);
   });
 });

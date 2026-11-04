@@ -13,7 +13,11 @@ services:
       - mysql_data:/var/lib/mysql
       - ./db:/docker-entrypoint-initdb.d
     healthcheck:
-      test: ["CMD-SHELL", "mysqladmin ping -h 127.0.0.1 -u root -p$${MYSQL_ROOT_PASSWORD} --silent"]
+      test:
+        [
+          "CMD-SHELL",
+          "mysqladmin ping -h 127.0.0.1 -u root -p$${MYSQL_ROOT_PASSWORD} --silent",
+        ]
       interval: 5s
       timeout: 5s
       retries: 20
@@ -27,8 +31,8 @@ services:
     env_file: .env
     environment:
       NODE_ENV: production
-      DB_HOST: mysql      # service name, not localhost
-      DB_PORT: 3306       # container port, not 3307 since using docker network
+      DB_HOST: mysql # service name, not localhost
+      DB_PORT: 3306 # container port, not 3307 since using docker network
     ports:
       - "5000:5000"
     depends_on:

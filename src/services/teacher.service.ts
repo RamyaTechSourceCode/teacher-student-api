@@ -13,9 +13,9 @@ export async function registerStudents(
 }
 
 export async function getCommonStudents(teachers: string[]): Promise<string[]> {
-   const uniqueTeachers = uniqueEmailsIgnoreCase(teachers);
-   const students = await teacherRepository.findCommonStudents(uniqueTeachers);
-   logger.debug(
+  const uniqueTeachers = uniqueEmailsIgnoreCase(teachers);
+  const students = await teacherRepository.findCommonStudents(uniqueTeachers);
+  logger.debug(
     { teacherCount: uniqueTeachers.length, studentCount: students.length },
     "Common students retrieved"
   );
@@ -23,12 +23,12 @@ export async function getCommonStudents(teachers: string[]): Promise<string[]> {
 }
 
 export async function suspendStudent(student: string): Promise<void> {
-   const found = await teacherRepository.suspendStudent(student);
+  const found = await teacherRepository.suspendStudent(student);
 
   if (!found) {
     throw new AppError(404, `Student not found: ${student}`);
   }
-   logger.info("Student suspended");
+  logger.info("Student suspended");
 }
 
 export async function getNotificationRecipients(

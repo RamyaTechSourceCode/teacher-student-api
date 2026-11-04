@@ -2,15 +2,20 @@ import { describe, it, expect, jest, beforeEach } from "@jest/globals";
 
 jest.mock("../../src/repositories/teacher.repository.js", () => ({
   registerStudents: jest.fn(),
-  findCommonStudents: jest.fn(),  
+  findCommonStudents: jest.fn(),
   suspendStudent: jest.fn(),
   findActiveStudentsOfTeacher: jest.fn(),
   findSuspendedStudents: jest.fn(),
 }));
 
 import * as teacherRepository from "../../src/repositories/teacher.repository.js";
-import { getNotificationRecipients, suspendStudent,getCommonStudents ,registerStudents } from "../../src/services/teacher.service.js";
-import { AppError } from "../../src/errors/AppError"; 
+import {
+  getNotificationRecipients,
+  suspendStudent,
+  getCommonStudents,
+  registerStudents,
+} from "../../src/services/teacher.service.js";
+import { AppError } from "../../src/errors/AppError";
 
 const mockedRegister = jest.mocked(teacherRepository.registerStudents);
 const mockedFindCommon = jest.mocked(teacherRepository.findCommonStudents);
@@ -146,7 +151,10 @@ describe("teacherService.getNotificationRecipients", () => {
   it("returns only registered students when there are no mentions (spec example 2)", async () => {
     mockedFindActive.mockResolvedValue(["studentbob@gmail.com"]);
 
-    const result = await getNotificationRecipients("teacherken@gmail.com", "Hey everybody");
+    const result = await getNotificationRecipients(
+      "teacherken@gmail.com",
+      "Hey everybody"
+    );
 
     expect(result).toEqual(["studentbob@gmail.com"]);
   });

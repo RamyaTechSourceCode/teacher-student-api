@@ -48,7 +48,8 @@ export const notificationSchema = z.object(
     teacher: email,
     notification: z
       .string({
-        error: (iss) => (iss.input === undefined ? "Field is required" : "Must be a string"),
+        error: (iss) =>
+          iss.input === undefined ? "Field is required" : "Must be a string",
       })
       .trim()
       .min(1, "Notification cannot be empty")

@@ -1,11 +1,11 @@
 import { describe, it, expect, jest, beforeEach } from "@jest/globals";
 import request from "supertest";
-import { AppError } from "../../src/errors/AppError"; 
+import { AppError } from "../../src/errors/AppError";
 
 jest.mock("../../src/services/teacher.service.js", () => ({
   registerStudents: jest.fn(),
-  getCommonStudents: jest.fn(),  
-  suspendStudent: jest.fn(), 
+  getCommonStudents: jest.fn(),
+  suspendStudent: jest.fn(),
   getNotificationRecipients: jest.fn(),
 }));
 
@@ -89,7 +89,10 @@ describe("POST /api/register", () => {
   it("rejects SQL injection attempts as invalid emails", async () => {
     const res = await request(app)
       .post("/api/register")
-      .send({ teacher: "x'; DROP TABLE teachers; --", students: ["studentjon@gmail.com"] });
+      .send({
+        teacher: "x'; DROP TABLE teachers; --",
+        students: ["studentjon@gmail.com"],
+      });
 
     expect(res.status).toBe(400);
     expect(mockedRegister).not.toHaveBeenCalled();
@@ -100,10 +103,16 @@ describe("POST /api/register", () => {
 
     const res = await request(app)
       .post("/api/register")
-      .send({ teacher: "teacherken@gmail.com", students: ["studentjon@gmail.com"], admin: true });
+      .send({
+        teacher: "teacherken@gmail.com",
+        students: ["studentjon@gmail.com"],
+        admin: true,
+      });
 
     expect(res.status).toBe(204);
-    expect(mockedRegister).toHaveBeenCalledWith("teacherken@gmail.com", ["studentjon@gmail.com"]);
+    expect(mockedRegister).toHaveBeenCalledWith("teacherken@gmail.com", [
+      "studentjon@gmail.com",
+    ]);
   });
   it("returns 204 for a valid request", async () => {
     const res = await request(app)
@@ -165,7 +174,6 @@ describe("POST /api/register", () => {
     expect(res.body.message).toBe("Internal server error");
     expect(JSON.stringify(res.body)).not.toContain("Sensitive");
   });
-  
 });
 
 //story 2: GET /api/commonstudents
@@ -182,13 +190,18 @@ describe("GET /api/commonstudents", () => {
   it("accepts an unencoded @ in the query string", async () => {
     mockedCommon.mockResolvedValue([]);
 
-    const res = await request(app).get("/api/commonstudents?teacher=teacherken@gmail.com");
+    const res = await request(app).get(
+      "/api/commonstudents?teacher=teacherken@gmail.com"
+    );
 
     expect(res.status).toBe(200);
     expect(mockedCommon).toHaveBeenCalledWith(["teacherken@gmail.com"]);
   });
   it("returns 200 with students for a single teacher", async () => {
-    mockedCommon.mockResolvedValue(["commonstudent1@gmail.com", "commonstudent2@gmail.com"]);
+    mockedCommon.mockResolvedValue([
+      "commonstudent1@gmail.com",
+      "commonstudent2@gmail.com",
+    ]);
 
     const res = await request(app).get(
       "/api/commonstudents?teacher=teacherken%40gmail.com"
@@ -353,16 +366,18 @@ describe("POST /api/retrievefornotifications", () => {
       "studentmiche@gmail.com",
     ]);
 
-    const res = await request(app)
-      .post("/api/retrievefornotifications")
-      .send({
-        teacher: "teacherken@gmail.com",
-        notification: "Hello students! @studentagnes@gmail.com @studentmiche@gmail.com",
-      });
+    const res = await request(app).post("/api/retrievefornotifications").send({
+      teacher: "teacherken@gmail.com",
+      notification: "Hello students! @studentagnes@gmail.com @studentmiche@gmail.com",
+    });
 
     expect(res.status).toBe(200);
     expect(res.body).toEqual({
-      recipients: ["studentbob@gmail.com", "studentagnes@gmail.com", "studentmiche@gmail.com"],
+      recipients: [
+        "studentbob@gmail.com",
+        "studentagnes@gmail.com",
+        "studentmiche@gmail.com",
+      ],
     });
     expect(mockedNotification).toHaveBeenCalledWith(
       "teacherken@gmail.com",

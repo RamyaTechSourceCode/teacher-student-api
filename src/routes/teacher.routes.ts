@@ -1,7 +1,17 @@
 import { Router } from "express";
-import { retrieveForNotifications, suspendStudent, getCommonStudents,register } from "../controllers/teacher.controller.js";
+import {
+  retrieveForNotifications,
+  suspendStudent,
+  getCommonStudents,
+  register,
+} from "../controllers/teacher.controller.js";
 import { validateBody } from "../middleware/validateBody.js";
-import { notificationSchema, suspendSchema, commonStudentsSchema,registerSchema } from "../validators/teacher.validator.js";
+import {
+  notificationSchema,
+  suspendSchema,
+  commonStudentsSchema,
+  registerSchema,
+} from "../validators/teacher.validator.js";
 import { validateQuery } from "../middleware/validateQuery.js";
 import { AppError } from "../errors/AppError.js";
 
@@ -35,5 +45,5 @@ router
   .all(() => {
     throw new AppError(405, "Method not allowed");
   });
-  
+
 export default router;

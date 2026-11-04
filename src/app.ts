@@ -50,5 +50,4 @@ app.use((_req, res) => {
 
 app.use(errorHandler); // must be last
 
-
 export default app;

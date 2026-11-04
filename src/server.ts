@@ -1,7 +1,7 @@
 import "dotenv/config";
 import app from "./app.js";
 import pool from "./config/database.js";
-import {env}  from "./config/env.js";
+import { env } from "./config/env.js";
 import { logger } from "./config/logger.js";
 
 const port = env.PORT || 3000;

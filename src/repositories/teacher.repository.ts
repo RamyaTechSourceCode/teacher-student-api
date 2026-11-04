@@ -1,5 +1,5 @@
 import pool from "../config/database.js";
-import type { ResultSetHeader,RowDataPacket } from "mysql2/promise";
+import type { ResultSetHeader, RowDataPacket } from "mysql2/promise";
 
 // Story 1: POST /api/register
 export async function registerStudents(
@@ -76,7 +76,9 @@ export async function suspendStudent(studentEmail: string): Promise<boolean> {
 
 //story 4: GET /api/retrievefornotifications
 /** Students registered to the teacher who are NOT suspended. */
-export async function findActiveStudentsOfTeacher(teacherEmail: string): Promise<string[]> {
+export async function findActiveStudentsOfTeacher(
+  teacherEmail: string
+): Promise<string[]> {
   const [rows] = await pool.query<EmailRow[]>(
     `SELECT s.email
      FROM students s
@@ -93,7 +95,7 @@ export async function findActiveStudentsOfTeacher(teacherEmail: string): Promise
 
 /** Of the given emails, returns those belonging to suspended students. */
 export async function findSuspendedStudents(studentEmails: string[]): Promise<string[]> {
-  if (studentEmails.length === 0) return []; 
+  if (studentEmails.length === 0) return [];
 
   const [rows] = await pool.query<EmailRow[]>(
     "SELECT email FROM students WHERE email IN (?) AND is_suspended = TRUE",

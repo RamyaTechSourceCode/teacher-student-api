@@ -2,8 +2,7 @@ import { z } from "zod";
 
 // "@" not preceded by a letter, digit, dot or "@" (so "bob@gmail.com" in plain text is not a mention),
 // followed by an email address
-const MENTION_PATTERN =
-  /(?<![\w.@])@([A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,})/g;
+const MENTION_PATTERN = /(?<![\w.@])@([A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,})/g;
 const emailSchema = z.email();
 
 /**

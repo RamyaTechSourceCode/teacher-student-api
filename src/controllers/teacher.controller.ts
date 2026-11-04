@@ -1,6 +1,11 @@
 import type { Request, Response } from "express";
 import * as teacherService from "../services/teacher.service.js";
-import type {NotificationInput, SuspendInput, CommonStudentsQuery,RegisterInput } from "../validators/teacher.validator.js";
+import type {
+  NotificationInput,
+  SuspendInput,
+  CommonStudentsQuery,
+  RegisterInput,
+} from "../validators/teacher.validator.js";
 
 // Story 1 :  POST /api/register
 export async function register(req: Request, res: Response): Promise<void> {
@@ -18,8 +23,8 @@ export async function getCommonStudents(_req: Request, res: Response): Promise<v
 
 // Story 3: POST /api/suspend
 export async function suspendStudent(req: Request, res: Response): Promise<void> {
-  const {  student } = req.body as SuspendInput;
-  await teacherService.suspendStudent( student);
+  const { student } = req.body as SuspendInput;
+  await teacherService.suspendStudent(student);
   res.sendStatus(204);
 }
 
@@ -29,6 +34,9 @@ export async function retrieveForNotifications(
   res: Response
 ): Promise<void> {
   const { teacher, notification } = req.body;
-  const recipients = await teacherService.getNotificationRecipients(teacher, notification);
+  const recipients = await teacherService.getNotificationRecipients(
+    teacher,
+    notification
+  );
   res.status(200).json({ recipients });
 }
