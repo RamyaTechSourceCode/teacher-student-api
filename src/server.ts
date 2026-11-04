@@ -2,20 +2,21 @@ import "dotenv/config";
 import app from "./app.js";
 import pool from "./config/database.js";
 import {env}  from "./config/env.js";
+import { logger } from "./config/logger.js";
 
 const port = env.PORT || 3000;
 
 async function start() {
   try {
     await pool.query("SELECT 1");
-    console.log("Database connected");
+    logger.info("Database connected");
 
     const server = app.listen(port, () => {
-      console.log(`Server running on http://localhost:${port}`);
+      logger.info(`Server running on http://localhost:${port}`);
     });
 
     server.on("error", (err) => {
-      console.error("Failed to start server:", err);
+      logger.fatal({ err }, "Failed to start server");
       process.exit(1);
     });
 
@@ -29,7 +30,7 @@ async function start() {
     process.on("SIGTERM", shutdown);
     process.on("SIGINT", shutdown);
   } catch (err) {
-    console.error("Database connection failed:", err);
+    logger.fatal({ err }, "Database connection failed");
     process.exit(1);
   }
 }

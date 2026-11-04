@@ -1,6 +1,7 @@
 import * as teacherRepository from "../repositories/teacher.repository.js";
 import { AppError } from "../errors/AppError.js";
 import { extractMentions } from "../utils/extractMentions.js";
+import { logger } from "../config/logger.js";
 
 export async function registerStudents(
   teacher: string,
@@ -8,10 +9,17 @@ export async function registerStudents(
 ): Promise<void> {
   const uniqueStudents = [...new Set(students)];
   await teacherRepository.registerStudents(teacher, uniqueStudents);
+  logger.info({ studentCount: uniqueStudents.length }, "Students registered to teacher");
 }
 
 export async function getCommonStudents(teachers: string[]): Promise<string[]> {
-  return teacherRepository.findCommonStudents(uniqueEmailsIgnoreCase(teachers));
+   const uniqueTeachers = uniqueEmailsIgnoreCase(teachers);
+   const students = await teacherRepository.findCommonStudents(uniqueTeachers);
+   logger.debug(
+    { teacherCount: uniqueTeachers.length, studentCount: students.length },
+    "Common students retrieved"
+  );
+  return students;
 }
 
 export async function suspendStudent(student: string): Promise<void> {
@@ -20,6 +28,7 @@ export async function suspendStudent(student: string): Promise<void> {
   if (!found) {
     throw new AppError(404, `Student not found: ${student}`);
   }
+   logger.info("Student suspended");
 }
 
 export async function getNotificationRecipients(
@@ -38,7 +47,18 @@ export async function getNotificationRecipients(
     (email) => !suspendedKeys.has(email.toLowerCase())
   );
 
-  return uniqueEmailsIgnoreCase([...registered, ...eligibleMentioned]);
+  const recipients = uniqueEmailsIgnoreCase([...registered, ...eligibleMentioned]);
+
+  logger.debug(
+    {
+      registeredCount: registered.length,
+      mentionedCount: mentioned.length,
+      recipientCount: recipients.length,
+    },
+    "Notification recipients resolved"
+  );
+
+  return recipients;
 }
 
 /** Removes duplicate emails, ignoring case (MySQL compares emails case-insensitively). */
