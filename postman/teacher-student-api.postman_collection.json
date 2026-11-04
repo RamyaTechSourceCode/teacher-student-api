@@ -341,7 +341,11 @@
   "variable": [
     {
       "key": "baseUrl",
-      "value": ""
+      "value": "http://3.0.209.53:5000"
+    },
+    {
+      "key": "localUrl",
+      "value": "http://localhost:5000"
     }
   ]
 }
