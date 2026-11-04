@@ -50,6 +50,17 @@ describe("registerSchema", () => {
 
     expect(result.success).toBe(false);
   });
+  it("rejects more than 1000 students", () => {
+    const students = Array.from({ length: 1001 }, (_, i) => `s${i}@gmail.com`);
+    const result = registerSchema.safeParse({ teacher: "teacherken@gmail.com", students });
+    expect(result.success).toBe(false);
+  });
+
+  it("accepts exactly 1000 students", () => {
+    const students = Array.from({ length: 1000 }, (_, i) => `s${i}@gmail.com`);
+    const result = registerSchema.safeParse({ teacher: "teacherken@gmail.com", students });
+    expect(result.success).toBe(true);
+  });
 });
 //story 2: GET /api/commonstudents
 describe("commonStudentsSchema", () => {

@@ -23,7 +23,88 @@ describe("POST /api/register", () => {
     jest.clearAllMocks();
     mockedRegister.mockResolvedValue(undefined);
   });
+  it("returns 400 when students is a string instead of an array", async () => {
+    const res = await request(app)
+      .post("/api/register")
+      .send({ teacher: "teacherken@gmail.com", students: "studentjon@gmail.com" });
 
+    expect(res.status).toBe(400);
+    expect(res.body.message).toContain("students");
+  });
+
+  it("returns 400 when a student is not a string", async () => {
+    const res = await request(app)
+      .post("/api/register")
+      .send({ teacher: "teacherken@gmail.com", students: [123] });
+
+    expect(res.status).toBe(400);
+  });
+
+  it("returns 400 when teacher is null", async () => {
+    const res = await request(app)
+      .post("/api/register")
+      .send({ teacher: null, students: ["studentjon@gmail.com"] });
+
+    expect(res.status).toBe(400);
+    expect(res.body.message).toContain("teacher");
+  });
+
+  it("returns 400 when the body is a JSON array", async () => {
+    const res = await request(app).post("/api/register").send([]);
+
+    expect(res.status).toBe(400);
+  });
+
+  it("returns 400 when Content-Type is not JSON", async () => {
+    const res = await request(app)
+      .post("/api/register")
+      .set("Content-Type", "text/plain")
+      .send('{"teacher":"teacherken@gmail.com","students":["studentjon@gmail.com"]}');
+
+    expect(res.status).toBe(400);
+    expect(mockedRegister).not.toHaveBeenCalled();
+  });
+
+  it("returns 413 when the student list makes the body too large", async () => {
+    const students = Array.from({ length: 1001 }, (_, i) => `s${i}@gmail.com`);
+
+    const res = await request(app)
+      .post("/api/register")
+      .send({ teacher: "teacherken@gmail.com", students });
+
+    expect(res.status).toBe(413);
+    expect(mockedRegister).not.toHaveBeenCalled();
+  });
+
+  it("returns 400 when an email is too long", async () => {
+    const longEmail = `${"a".repeat(250)}@gmail.com`;
+
+    const res = await request(app)
+      .post("/api/register")
+      .send({ teacher: longEmail, students: ["studentjon@gmail.com"] });
+
+    expect(res.status).toBe(400);
+  });
+
+  it("rejects SQL injection attempts as invalid emails", async () => {
+    const res = await request(app)
+      .post("/api/register")
+      .send({ teacher: "x'; DROP TABLE teachers; --", students: ["studentjon@gmail.com"] });
+
+    expect(res.status).toBe(400);
+    expect(mockedRegister).not.toHaveBeenCalled();
+  });
+
+  it("ignores unknown extra fields", async () => {
+    mockedRegister.mockResolvedValue(undefined);
+
+    const res = await request(app)
+      .post("/api/register")
+      .send({ teacher: "teacherken@gmail.com", students: ["studentjon@gmail.com"], admin: true });
+
+    expect(res.status).toBe(204);
+    expect(mockedRegister).toHaveBeenCalledWith("teacherken@gmail.com", ["studentjon@gmail.com"]);
+  });
   it("returns 204 for a valid request", async () => {
     const res = await request(app)
       .post("/api/register")
@@ -84,20 +165,28 @@ describe("POST /api/register", () => {
     expect(res.body.message).toBe("Internal server error");
     expect(JSON.stringify(res.body)).not.toContain("Sensitive");
   });
+  
 });
 
-describe("Unknown routes", () => {
-  it("returns 404", async () => {
-    const res = await request(app).get("/api/does-not-exist");
-    expect(res.status).toBe(404);
-  });
-});
 //story 2: GET /api/commonstudents
 describe("GET /api/commonstudents", () => {
   beforeEach(() => {
     jest.clearAllMocks();
   });
+  it("returns 400 when teacher is an empty string", async () => {
+    const res = await request(app).get("/api/commonstudents?teacher=");
 
+    expect(res.status).toBe(400);
+  });
+
+  it("accepts an unencoded @ in the query string", async () => {
+    mockedCommon.mockResolvedValue([]);
+
+    const res = await request(app).get("/api/commonstudents?teacher=teacherken@gmail.com");
+
+    expect(res.status).toBe(200);
+    expect(mockedCommon).toHaveBeenCalledWith(["teacherken@gmail.com"]);
+  });
   it("returns 200 with students for a single teacher", async () => {
     mockedCommon.mockResolvedValue(["commonstudent1@gmail.com", "commonstudent2@gmail.com"]);
 
@@ -241,7 +330,22 @@ describe("POST /api/retrievefornotifications", () => {
   beforeEach(() => {
     jest.clearAllMocks();
   });
+  it("returns 400 when notification is not a string", async () => {
+    const res = await request(app)
+      .post("/api/retrievefornotifications")
+      .send({ teacher: "teacherken@gmail.com", notification: 123 });
 
+    expect(res.status).toBe(400);
+    expect(res.body.message).toContain("notification");
+  });
+
+  it("returns 400 when notification is too long", async () => {
+    const res = await request(app)
+      .post("/api/retrievefornotifications")
+      .send({ teacher: "teacherken@gmail.com", notification: "a".repeat(5001) });
+
+    expect(res.status).toBe(400);
+  });
   it("returns 200 with recipients", async () => {
     mockedNotification.mockResolvedValue([
       "studentbob@gmail.com",
@@ -313,5 +417,22 @@ describe("POST /api/retrievefornotifications", () => {
 
     expect(res.status).toBe(405);
     expect(res.body).toEqual({ message: "Method not allowed" });
+  });
+});
+
+//unkown routes
+describe("Unknown routes", () => {
+  it("returns 404", async () => {
+    const res = await request(app).get("/api/does-not-exist");
+    expect(res.status).toBe(404);
+  });
+});
+
+describe("Security headers", () => {
+  it("sets helmet security headers", async () => {
+    const res = await request(app).get("/api/does-not-exist");
+
+    expect(res.headers["x-content-type-options"]).toBe("nosniff");
+    expect(res.headers["x-powered-by"]).toBeUndefined();
   });
 });
