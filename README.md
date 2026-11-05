@@ -144,7 +144,7 @@ Other scripts:
 | `npm run lint`          | Lint with ESLint                    |
 | `npm run format`        | Format with Prettier                |
 
----
+```
 
 ## 4. Running the tests
 
