@@ -10,7 +10,7 @@ Built with Node.js, TypeScript, Express 5 and MySQL 8.
 
 ## 1. Hosted API (AWS)
 
-**Base URL:** http://18.139.60.28:5000
+**Base URL:** http://18.139.60.28
 
 The API is deployed on an AWS EC2 instance, running the same Docker Compose setup
 described in section 2 (API container + MySQL container).
@@ -27,19 +27,19 @@ described in section 2 (API container + MySQL container).
 macOS / Linux / Git Bash:
 
 ```bash
-curl -i -X POST http://18.139.60.28:5000/api/register \
+curl -i -X POST http://18.139.60.28/api/register \
   -H "Content-Type: application/json" \
   -d '{"teacher":"teacherken@gmail.com","students":["studentjon@gmail.com","studenthon@gmail.com"]}'
 
-curl "http://18.139.60.28:5000/api/commonstudents?teacher=teacherken%40gmail.com"
+curl "http://18.139.60.28/api/commonstudents?teacher=teacherken%40gmail.com"
 ```
 
 Windows PowerShell:
 
 ```powershell
-Invoke-RestMethod -Method Post -Uri http://18.139.60.28:5000/api/register -ContentType "application/json" -Body '{"teacher":"teacherken@gmail.com","students":["studentjon@gmail.com","studenthon@gmail.com"]}'
+Invoke-RestMethod -Method Post -Uri http://18.139.60.28/api/register -ContentType "application/json" -Body '{"teacher":"teacherken@gmail.com","students":["studentjon@gmail.com","studenthon@gmail.com"]}'
 
-Invoke-RestMethod "http://18.139.60.28:5000/api/commonstudents?teacher=teacherken%40gmail.com"
+Invoke-RestMethod "http://18.139.60.28/api/commonstudents?teacher=teacherken%40gmail.com"
 ```
 
 Expected: `204 No Content` for the first call. The second call returns `200` with a
@@ -72,8 +72,13 @@ docker compose up --build
 `.env.example` contains placeholder values for a local database only; no real
 credentials are stored in the repository.
 
-The first run takes 1–2 minutes. When the logs show `Database connected` and
-`Server running on http://localhost:5000`, the API is ready.
+The first run takes 1–2 minutes.    When the logs show `Database connected` and `Server listening`, the API is ready at **http://localhost:5000**.
+
+> **macOS:** port 5000 is used by AirPlay Receiver. If `docker compose up` fails with
+> "port is already allocated" or "address already in use", either turn it off in
+> **System Settings → General → AirDrop & Handoff → AirPlay Receiver**, or change the
+> host port in `docker-compose.yml` from `"5000:5000"` to `"5001:5000"` and use
+> `http://localhost:5001` (also set `localUrl` in Postman to match).
 
 Useful commands:
 
@@ -106,19 +111,6 @@ cp .env.example .env               # macOS / Linux
 Copy-Item .env.example .env        # Windows PowerShell
 ```
 
-The defaults match the Docker setup and work as they are:
-
-```
-PORT=5000
-NODE_ENV=development
-DB_HOST=localhost
-DB_PORT=3307
-DB_NAME=teacher_student_db
-DB_USER=app_user
-DB_PASSWORD=app_password
-DB_ROOT_PASSWORD=rootpass
-```
-
 Start only the database, then the API:
 
 ```bash
@@ -126,16 +118,19 @@ docker compose up -d mysql
 npm run dev
 ```
 
-The API is available at **http://localhost:5000**. MySQL is exposed on
-`127.0.0.1:3307` (port 3307 avoids clashing with a MySQL already installed on 3306).
+The API is available at **http://localhost:5000**. MySQL runs on `127.0.0.1:3307`
+(not 3306, to avoid clashing with a local MySQL).
 
-> If you change any `DB_*` password after MySQL has been created, reset it with
-> `docker compose down -v` (this deletes the data). MySQL only applies passwords on first start.
+> **macOS:** if `npm run dev` fails with `EADDRINUSE` on port 5000 (AirPlay Receiver),
+> turn off AirPlay Receiver as described in section 2, or set `PORT=5001` in `.env`
+> and use `http://localhost:5001`.
 
-> Using your own MySQL instead of Docker: create a database and a user with access to it,
-> run the schema against that database
-> (e.g. `mysql -u root -p teacher_student_db < db/schema.sql`),
-> and set the `DB_*` values in `.env` to match.
+> **Notes**
+> - MySQL only applies `DB_*` passwords on first start. If you change one later, reset with
+>   `docker compose down -v` (this deletes the data).
+> - Without Docker: create a MySQL 8 database and user, run `db/schema.sql` against it,
+>   and set the `DB_*` values in `.env` to match.
+```
 
 Other scripts:
 
@@ -164,7 +159,7 @@ npm test
 To see a coverage report:
 
 ```bash
-npx jest --coverage
+npm run test:coverage
 ```
 
 | Test file                              | Covers                                                                                          |
@@ -184,7 +179,7 @@ collection (section 5) against a running instance.
 1. In Postman, press **Ctrl+O** (or **File → Import**) and select
    `postman/teacher-student-api.postman_collection.json`.
 2. The collection has two variables (collection → **Variables** tab):
-   - `baseUrl`: the hosted API, `http://18.139.60.28:5000` (default)
+   - `baseUrl`: the hosted API, `http://18.139.60.28` (default)
    - `localUrl`: `http://localhost:5000`
 
    To test a local instance, set `baseUrl` to `{{localUrl}}`.
@@ -339,12 +334,14 @@ postman/            Postman collection
 - `commonstudents` returns students registered to **all** given teachers. An unknown
   teacher returns an empty list rather than an error.
 - For notifications, recipients are the teacher's non-suspended students plus any
-  @mentioned students who are not suspended. A mentioned email that does not exist in
-  the database is still included, since the spec does not require mentioned students
-  to be registered. Duplicates are removed.
+  @mentioned students who are not suspended. Any valid mentioned email is treated as a
+  student, even if it is not in the database (the spec does not require mentioned
+  students to be registered) or belongs to a teacher. Duplicates are removed.
 - A mention is `@` followed by an email, not preceded by a letter, digit, underscore,
   dot or another `@`, so a plain email address in the text (`bob@gmail.com`) is not treated as
   a mention. Mentions can be separated by spaces, commas or new lines.
+- Mention with no separator. "@a@gmail.comHello" is parsed as a@gmail.comHello, because without a  
+  space there’s no way to know where the email ends.
 - Limits: up to 1000 students per register request, 100 teachers per
   `commonstudents` query, 5000 characters per notification, 100 KB request body.
 

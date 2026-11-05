@@ -1,10 +1,10 @@
 {
   "info": {
-    "_postman_id": "f97721d9-93ca-49ed-88d2-da67596a65ad",
+    "_postman_id": "66aa1dfb-fe4e-4952-8895-22588c250991",
     "name": "TeacherStudent",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
     "_exporter_id": "24612793",
-    "_collection_link": "https://go.postman.co/collection/24612793-f97721d9-93ca-49ed-88d2-da67596a65ad?source=collection_link"
+    "_collection_link": "https://go.postman.co/collection/24612793-66aa1dfb-fe4e-4952-8895-22588c250991?source=collection_link"
   },
   "item": [
     {
@@ -17,7 +17,18 @@
               "listen": "prerequest",
               "script": {
                 "type": "text/javascript",
-                "exec": ["  pm.variables.set(\"bigText\", \"x\".repeat(11 * 1024));"]
+                "exec": [
+                  ""
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status is 204\", () => pm.response.to.have.status(204));"
+                ]
               }
             }
           ],
@@ -35,14 +46,30 @@
             },
             "url": {
               "raw": "{{baseUrl}}/api/register",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "register"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "register"
+              ]
             }
           },
           "response": []
         },
         {
           "name": "Register - Joe",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status is 204\", () => pm.response.to.have.status(204));"
+                ]
+              }
+            }
+          ],
           "request": {
             "method": "POST",
             "header": [],
@@ -57,14 +84,30 @@
             },
             "url": {
               "raw": "{{baseUrl}}/api/register",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "register"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "register"
+              ]
             }
           },
           "response": []
         },
         {
           "name": "Register - invalid email",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status is 400\", () => pm.response.to.have.status(400));\r\npm.test(\"Returns an error message\", () => pm.expect(pm.response.json()).to.have.property(\"message\"));"
+                ]
+              }
+            }
+          ],
           "request": {
             "method": "POST",
             "header": [],
@@ -79,8 +122,13 @@
             },
             "url": {
               "raw": "{{baseUrl}}/api/register",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "register"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "register"
+              ]
             }
           },
           "response": []
@@ -92,13 +140,29 @@
       "item": [
         {
           "name": "CommonStudents - Ken",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status is 200\", () => pm.response.to.have.status(200));\r\npm.test(\"students include expected emails\", () => {\r\n  const list = pm.response.json().students;\r\n  [\"commonstudent1@gmail.com\", \"commonstudent2@gmail.com\", \"student_only_under_teacher_ken@gmail.com\"]\r\n    .forEach((e) => pm.expect(list).to.include(e));\r\n});"
+                ]
+              }
+            }
+          ],
           "request": {
             "method": "GET",
             "header": [],
             "url": {
               "raw": "{{baseUrl}}/api/commonstudents?teacher=teacherken@gmail.com",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "commonstudents"],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "commonstudents"
+              ],
               "query": [
                 {
                   "key": "teacher",
@@ -111,13 +175,29 @@
         },
         {
           "name": "CommonStudents - Ken & Joe",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status is 200\", () => pm.response.to.have.status(200));\r\npm.test(\"students include expected emails\", () => {\r\n  const list = pm.response.json().students;\r\n  [\"commonstudent1@gmail.com\", \"commonstudent2@gmail.com\"]\r\n    .forEach((e) => pm.expect(list).to.include(e));\r\n});\r\npm.test(\"Excludes students of only one teacher\", () =>\r\n  pm.expect(pm.response.json().students).to.not.include(\"student_only_under_teacher_ken@gmail.com\"));"
+                ]
+              }
+            }
+          ],
           "request": {
             "method": "GET",
             "header": [],
             "url": {
               "raw": "{{baseUrl}}/api/commonstudents?teacher=teacherken@gmail.com&teacher=teacherjoe@gmail.com",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "commonstudents"],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "commonstudents"
+              ],
               "query": [
                 {
                   "key": "teacher",
@@ -134,13 +214,29 @@
         },
         {
           "name": "Common students - missing teacher",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status is 400\", () => pm.response.to.have.status(400));\r\npm.test(\"Returns an error message\", () => pm.expect(pm.response.json()).to.have.property(\"message\"));"
+                ]
+              }
+            }
+          ],
           "request": {
             "method": "GET",
             "header": [],
             "url": {
               "raw": "{{baseUrl}}/api/commonstudents",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "commonstudents"],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "commonstudents"
+              ],
               "query": [
                 {
                   "key": "teacher",
@@ -159,6 +255,17 @@
       "item": [
         {
           "name": "Suspend - Mary",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status is 204\", () => pm.response.to.have.status(204));"
+                ]
+              }
+            }
+          ],
           "request": {
             "method": "POST",
             "header": [],
@@ -173,14 +280,30 @@
             },
             "url": {
               "raw": "{{baseUrl}}/api/suspend",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "suspend"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "suspend"
+              ]
             }
           },
           "response": []
         },
         {
           "name": "Suspend - unknown student",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status is 404\", () => pm.response.to.have.status(404));\r\npm.test(\"Returns an error message\", () => pm.expect(pm.response.json()).to.have.property(\"message\"));"
+                ]
+              }
+            }
+          ],
           "request": {
             "method": "POST",
             "header": [],
@@ -195,8 +318,13 @@
             },
             "url": {
               "raw": "{{baseUrl}}/api/suspend",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "suspend"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "suspend"
+              ]
             }
           },
           "response": []
@@ -208,6 +336,17 @@
       "item": [
         {
           "name": "Notification (registered students + mentions)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status is 200\", () => pm.response.to.have.status(200));\r\npm.test(\"recipients include expected emails\", () => {\r\n  const list = pm.response.json().recipients;\r\n  [\"studentbob@gmail.com\", \"studentagnes@gmail.com\", \"studentmiche@gmail.com\"]\r\n    .forEach((e) => pm.expect(list).to.include(e));\r\n});\r\npm.test(\"No duplicates\", () => {\r\n  const r = pm.response.json().recipients;\r\n  pm.expect(new Set(r).size).to.eql(r.length);\r\n});"
+                ]
+              }
+            }
+          ],
           "request": {
             "method": "POST",
             "header": [],
@@ -222,14 +361,30 @@
             },
             "url": {
               "raw": "{{baseUrl}}/api/retrievefornotifications",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "retrievefornotifications"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "retrievefornotifications"
+              ]
             }
           },
           "response": []
         },
         {
           "name": "Notification (no mentions)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status is 200\", () => pm.response.to.have.status(200));\r\npm.test(\"recipients include expected emails\", () => {\r\n  const list = pm.response.json().recipients;\r\n  [\"studentbob@gmail.com\"].forEach((e) => pm.expect(list).to.include(e));\r\n});"
+                ]
+              }
+            }
+          ],
           "request": {
             "method": "POST",
             "header": [],
@@ -244,14 +399,30 @@
             },
             "url": {
               "raw": "{{baseUrl}}/api/retrievefornotifications",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "retrievefornotifications"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "retrievefornotifications"
+              ]
             }
           },
           "response": []
         },
         {
           "name": "Notification (missing notification)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status is 400\", () => pm.response.to.have.status(400));\r\npm.test(\"Returns an error message\", () => pm.expect(pm.response.json()).to.have.property(\"message\"));"
+                ]
+              }
+            }
+          ],
           "request": {
             "method": "POST",
             "header": [],
@@ -266,8 +437,51 @@
             },
             "url": {
               "raw": "{{baseUrl}}/api/retrievefornotifications",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "retrievefornotifications"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "retrievefornotifications"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Notification (suspended registered student excluded)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status is 200\", () => pm.response.to.have.status(200));\r\npm.test(\"Includes Joe's active students\", () =>\r\n  pm.expect(pm.response.json().recipients).to.include(\"commonstudent1@gmail.com\"));\r\npm.test(\"Excludes suspended Mary\", () =>\r\n  pm.expect(pm.response.json().recipients).to.not.include(\"studentmary@gmail.com\"));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{ \"teacher\": \"teacherjoe@gmail.com\", \"notification\": \"Hello class\" }",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/retrievefornotifications",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "retrievefornotifications"
+              ]
             }
           },
           "response": []
@@ -278,7 +492,7 @@
   "variable": [
     {
       "key": "baseUrl",
-      "value": "http://18.139.60.28:5000"
+      "value": "http://18.139.60.28"
     },
     {
       "key": "localUrl",

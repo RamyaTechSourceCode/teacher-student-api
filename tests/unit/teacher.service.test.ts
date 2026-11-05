@@ -76,6 +76,7 @@ describe("teacherService.registerStudents", () => {
     ).rejects.toThrow("DB down");
   });
 });
+
 //story 2: GET /api/commonstudents
 describe("teacherService.getCommonStudents", () => {
   beforeEach(() => {
@@ -105,6 +106,7 @@ describe("teacherService.getCommonStudents", () => {
     await expect(getCommonStudents(["teacherken@gmail.com"])).rejects.toThrow("DB down");
   });
 });
+
 //story 3: POST /api/suspend
 describe("teacherService.suspendStudent", () => {
   beforeEach(() => {
@@ -134,6 +136,18 @@ describe("teacherService.suspendStudent", () => {
     mockedSuspend.mockRejectedValue(new Error("DB down"));
 
     await expect(suspendStudent("studentmary@gmail.com")).rejects.toThrow("DB down");
+  });
+
+  it("excludes a suspended mentioned student even when the case differs", async () => {
+    mockedFindActive.mockResolvedValue([]);
+    mockedFindSuspended.mockResolvedValue(["studentmiche@gmail.com"]);
+
+    const result = await getNotificationRecipients(
+      "teacherken@gmail.com",
+      "@StudentMiche@Gmail.com @studentagnes@gmail.com"
+    );
+
+    expect(result).toEqual(["studentagnes@gmail.com"]);
   });
 });
 
